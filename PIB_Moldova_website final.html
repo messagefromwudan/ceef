@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIB Nominal vs. Real — Republica Moldova 2019–2024</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --navy: #0D2F5E; --blue: #185FA5; --accent: #F5C842;
+    --red: #A32D2D; --green: #3B6D11;
+    --bg: #F0F4FA; --white: #ffffff;
+    --text: #1a2a40; --text-muted: #5a7094;
+    --border: rgba(24,95,165,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+
+  /* NAV */
+  nav { position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,47,94,0.97);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;border-bottom:1px solid rgba(255,255,255,0.08); }
+  .nav-logo { font-family:'DM Serif Display',serif;color:var(--white);font-size:1.05rem; }
+  .nav-logo span { color:var(--accent); }
+  .nav-links { display:flex;gap:1.4rem;list-style:none; }
+  .nav-links a { color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.8rem;font-weight:500;transition:color 0.2s; }
+  .nav-links a:hover { color:var(--accent); }
+  .nav-badge { font-size:0.72rem;background:var(--accent);color:var(--navy);padding:3px 10px;border-radius:20px;font-weight:700; }
+
+  /* HERO */
+  .hero { min-height:100vh;background:linear-gradient(135deg,var(--navy) 0%,#1a4a8a 50%,#0a3060 100%);display:flex;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem 4rem;position:relative;overflow:hidden; }
+  .hero::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 70%,rgba(245,200,66,0.08) 0%,transparent 60%),radial-gradient(ellipse at 70% 30%,rgba(24,95,165,0.3) 0%,transparent 60%); }
+  .hero-dots { position:absolute;width:200px;height:200px;background-image:radial-gradient(rgba(255,255,255,0.15) 1.5px,transparent 1.5px);background-size:20px 20px; }
+  .hero-dots.tl { top:80px;left:40px; } .hero-dots.br { bottom:60px;right:40px; }
+  .hero-content { position:relative;z-index:1;max-width:860px; }
+  .hero-tag { display:inline-flex;align-items:center;gap:8px;background:rgba(245,200,66,0.15);border:1px solid rgba(245,200,66,0.4);color:var(--accent);padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1.5rem; }
+  .hero h1 { font-family:'DM Serif Display',serif;font-size:clamp(2.4rem,5vw,3.8rem);color:var(--white);line-height:1.15;margin-bottom:1rem; }
+  .hero h1 em { color:var(--accent);font-style:italic; }
+  .hero-sub { font-size:1rem;color:rgba(255,255,255,0.65);line-height:1.6;margin-bottom:1.5rem;max-width:600px;margin-left:auto;margin-right:auto; }
+  .hero-meta { display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;margin-top:1rem; }
+  .hero-meta-item { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:0.5rem 1rem;font-size:0.8rem;color:rgba(255,255,255,0.6); }
+  .hero-meta-item strong { color:var(--white);display:block;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;opacity:0.5;margin-bottom:2px; }
+  .hero-scroll { position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(255,255,255,0.4);font-size:0.72rem;letter-spacing:0.1em; }
+  .scroll-arrow { width:24px;height:24px;border:1px solid rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:bounce 2s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(4px)} }
+
+  /* GENERAL */
+  section { padding:5rem 0; }
+  .container { max-width:1100px;margin:0 auto;padding:0 2rem; }
+  .section-label { font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);margin-bottom:0.5rem; }
+  .section-title { font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,3vw,2.4rem);color:var(--navy);line-height:1.2;margin-bottom:1rem; }
+  .section-desc { font-size:0.97rem;color:var(--text-muted);line-height:1.7;max-width:700px; }
+  .accent-line { width:48px;height:3px;background:var(--blue);border-radius:2px;margin-bottom:1rem; }
+
+  /* PIB CARDS */
+  .pib-section { background:var(--white); }
+  .pib-grid { display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3rem; }
+  .pib-card { border-radius:16px;padding:2rem; }
+  .pib-card.nominal { background:var(--navy);color:var(--white); }
+  .pib-card.real { background:var(--bg);border:1.5px solid var(--border); }
+  .pib-card-tag { font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem;opacity:0.6; }
+  .pib-card h3 { font-family:'DM Serif Display',serif;font-size:1.6rem;margin-bottom:1rem; }
+  .pib-card.nominal h3 { color:var(--accent); } .pib-card.real h3 { color:var(--navy); }
+  .pib-card p { font-size:0.92rem;line-height:1.7;opacity:0.8;margin-bottom:1.2rem; }
+  .formula-box { background:rgba(255,255,255,0.1);border-radius:10px;padding:0.8rem 1.2rem;font-size:0.88rem;font-family:monospace; }
+  .pib-card.real .formula-box { background:rgba(24,95,165,0.08);color:var(--navy);font-weight:600; }
+
+  /* DEFLATOR */
+  .deflator-section { background:var(--navy); }
+  .deflator-section .section-title { color:var(--white); }
+  .deflator-section .section-label { color:var(--accent); }
+  .deflator-section .section-desc { color:rgba(255,255,255,0.6); }
+  .deflator-grid { display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem; }
+  .deflator-card { background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:1.8rem; }
+  .deflator-card h4 { font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--accent);margin-bottom:0.8rem; }
+  .deflator-card p { font-size:0.9rem;color:rgba(255,255,255,0.65);line-height:1.7; }
+  .deflator-formula { margin-top:2rem;text-align:center;background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.3);border-radius:14px;padding:1.5rem; }
+  .deflator-formula p { color:rgba(255,255,255,0.5);font-size:0.8rem;margin-bottom:0.5rem; }
+  .deflator-formula .formula { font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--accent); }
+  .alert-box { margin-top:1.5rem;background:rgba(163,45,45,0.15);border:1px solid rgba(163,45,45,0.3);border-radius:12px;padding:1rem 1.4rem;font-size:0.88rem;color:rgba(255,200,200,0.85);line-height:1.6; }
+  .alert-box strong { color:#ff9999; }
+
+  /* CHARTS */
+  .charts-section { background:var(--bg); }
+  .chart-wrapper { background:var(--white);border-radius:18px;padding:2rem;margin-bottom:2rem;border:1px solid var(--border);box-shadow:0 2px 20px rgba(13,47,94,0.06); }
+  .chart-header { display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem; }
+  .chart-title { font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--navy);margin-bottom:0.3rem; }
+  .chart-subtitle { font-size:0.8rem;color:var(--text-muted); }
+  .chart-badge { font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--navy);color:var(--white);padding:4px 10px;border-radius:6px;white-space:nowrap; }
+  .legend { display:flex;flex-wrap:wrap;gap:14px;margin-bottom:1rem; }
+  .legend-item { display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--text-muted); }
+  .legend-box { width:12px;height:12px;border-radius:3px;flex-shrink:0; }
+  .legend-line { width:20px;height:3px;border-radius:2px;flex-shrink:0; }
+  .chart-canvas-wrap { position:relative;height:320px;width:100%; }
+  .chart-insight { margin-top:1.2rem;background:rgba(24,95,165,0.06);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:0.8rem 1rem;font-size:0.84rem;color:var(--text-muted);line-height:1.6; }
+  .chart-insight strong { color:var(--navy); }
+  .chart-source { font-size:0.72rem;color:#aab;margin-top:0.6rem; }
+  .stats-row { display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.5rem; }
+  .stat-card { border-radius:12px;padding:1rem;text-align:center; }
+  .stat-card.success { background:rgba(59,109,17,0.08);border:1px solid rgba(59,109,17,0.2); }
+  .stat-card.danger { background:rgba(163,45,45,0.08);border:1px solid rgba(163,45,45,0.2); }
+  .stat-card.warning { background:rgba(245,200,66,0.12);border:1px solid rgba(245,200,66,0.3); }
+  .stat-val { font-family:'DM Serif Display',serif;font-size:1.5rem; }
+  .stat-card.success .stat-val { color:var(--green); }
+  .stat-card.danger .stat-val { color:var(--red); }
+  .stat-card.warning .stat-val { color:#b5911a; }
+  .stat-label { font-size:0.75rem;color:var(--text-muted);margin-top:0.3rem;line-height:1.4; }
+
+  /* TABLES */
+  .tables-section { background:var(--white); }
+  .table-wrapper { background:var(--white);border-radius:18px;padding:2rem;margin-bottom:2rem;border:1px solid var(--border);box-shadow:0 2px 20px rgba(13,47,94,0.06);overflow-x:auto; }
+  table { width:100%;border-collapse:collapse;font-size:0.85rem; }
+  thead tr { background:var(--navy); }
+  thead th { color:var(--white);font-weight:600;padding:12px 14px;text-align:center;font-size:0.8rem;white-space:nowrap; }
+  thead th:first-child { text-align:left;border-radius:8px 0 0 0; }
+  thead th:last-child { border-radius:0 8px 0 0; }
+  .t2 thead tr { background:var(--green); }
+  tbody tr:nth-child(odd) { background:var(--bg); }
+  tbody tr:nth-child(even) { background:var(--white); }
+  tbody tr:hover { background:rgba(24,95,165,0.05); }
+  tbody td { padding:10px 14px;text-align:center;border-bottom:1px solid var(--border);font-size:0.84rem; }
+  tbody td:first-child { text-align:left;font-weight:600;color:var(--navy); }
+  .td-event { font-size:0.78rem;color:var(--text-muted);text-align:left; }
+  .neg { color:var(--red);font-weight:600; } .pos { color:var(--green);font-weight:600; } .warn { color:#b5911a;font-weight:600; }
+  .badge { font-size:0.68rem;padding:2px 6px;border-radius:4px;display:inline-block;margin-left:3px;font-weight:600; }
+  .badge-neg { background:rgba(163,45,45,0.1);color:var(--red); }
+  .badge-pos { background:rgba(59,109,17,0.1);color:var(--green); }
+  .badge-warn { background:rgba(245,200,66,0.15);color:#9a7a10; }
+  tfoot td { background:var(--bg);font-size:0.73rem;color:var(--text-muted);padding:10px 14px;border-top:1px solid var(--border); }
+  .table-conclusion { margin-top:1rem;padding:0.9rem 1.2rem;border-radius:10px;font-size:0.85rem;line-height:1.6; }
+  .table-conclusion.warn-bg { background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.3);color:#7a5f00; }
+  .two-cols { display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem; }
+  .mini-card { border-radius:10px;padding:1rem;font-size:0.83rem;line-height:1.6; }
+  .mini-card.danger-bg { background:rgba(163,45,45,0.08);border:1px solid rgba(163,45,45,0.2);color:#7a1010; }
+  .mini-card.success-bg { background:rgba(59,109,17,0.08);border:1px solid rgba(59,109,17,0.2);color:#2a5008; }
+  .mini-card strong { display:block;margin-bottom:0.3rem; }
+
+  /* VIDEO */
+  .video-section { background:var(--bg); }
+  .video-placeholder { margin-top:2.5rem;border-radius:20px;overflow:hidden;border:2px dashed rgba(24,95,165,0.3);background:var(--white);min-height:380px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;text-align:center;padding:3rem; }
+  .video-icon { width:76px;height:76px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center; }
+  .video-icon svg { fill:var(--accent);width:30px;height:30px;margin-left:4px; }
+  .video-placeholder h3 { font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy); }
+  .video-placeholder p { font-size:0.9rem;color:var(--text-muted);max-width:480px;line-height:1.7; }
+  .video-badge-big { background:var(--accent);color:var(--navy);font-weight:700;font-size:0.8rem;padding:6px 16px;border-radius:20px;letter-spacing:0.05em; }
+  .video-steps { display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;width:100%;max-width:680px;margin-top:0.5rem; }
+  .video-step { background:var(--bg);border-radius:10px;padding:0.9rem;text-align:center; }
+  .video-step-num { font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--blue);opacity:0.4; }
+  .video-step p { font-size:0.78rem;color:var(--text-muted);margin-top:0.3rem;line-height:1.5; }
+  code { background:var(--bg);padding:4px 10px;border-radius:6px;color:var(--blue);font-size:0.8rem; }
+  .src { font-size:0.68rem;color:#9aabb8;margin-left:4px;white-space:nowrap; }
+  .src a { color:#9aabb8;text-decoration:none;border-bottom:1px dotted #c0d0db; }
+  .src a:hover { color:var(--blue); }
+  .src-block { font-size:0.68rem;color:#9aabb8;margin-top:0.5rem;line-height:1.8; }
+  .src-block a { color:#9aabb8;text-decoration:none;border-bottom:1px dotted #c0d0db; }
+  .src-block a:hover { color:var(--blue); }
+
+  /* INFOGRAFIC */
+  .infographic-section { background:var(--navy); }
+  .infographic-section .section-title { color:var(--white); }
+  .infographic-section .section-label { color:var(--accent); }
+  .infographic-section .section-desc { color:rgba(255,255,255,0.6); }
+  .infog-title-bar { background:var(--accent);color:var(--navy);text-align:center;padding:1.2rem;border-radius:14px 14px 0 0;font-family:'DM Serif Display',serif;font-size:1.2rem;margin-top:2.5rem; }
+  .infog-subtitle { text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.45);margin-bottom:1rem; }
+  .infog-row { display:grid;grid-template-columns:1fr 80px 1fr; }
+  .infog-card-l, .infog-card-r { background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:1.2rem 1.4rem; }
+  .infog-card-l { border-right:none; }
+  .infog-card-r { border-left:none; }
+  .infog-mid { background:var(--navy);border-top:1px solid rgba(255,255,255,0.1);border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;text-align:center;padding:0.5rem; }
+  .infog-year { font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--accent);line-height:1; }
+  .infog-yr-label { font-size:0.58rem;color:rgba(255,255,255,0.35);letter-spacing:0.05em;margin-top:2px; }
+  .infog-card-l h4, .infog-card-r h4 { font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem; }
+  .infog-card-l h4 { color:rgba(100,170,255,0.8); }
+  .infog-card-r h4 { color:rgba(100,210,100,0.8); }
+  .infog-val { font-family:'DM Serif Display',serif;font-size:1.4rem; }
+  .infog-desc { font-size:0.75rem;color:rgba(255,255,255,0.45);margin-top:0.3rem;line-height:1.5; }
+  .infog-event { background:rgba(245,200,66,0.08);border:1px solid rgba(245,200,66,0.2);border-radius:0 0 14px 14px;padding:0.9rem 1.4rem;text-align:center;font-size:0.8rem;color:rgba(255,255,255,0.5); }
+  .infog-event strong { color:var(--accent); }
+  .infog-crisis { background:rgba(163,45,45,0.15);border-left-color:rgba(163,45,45,0.4);border-right-color:rgba(163,45,45,0.4); }
+  .infog-crisis-mid { background:rgba(163,45,45,0.25);border-color:rgba(163,45,45,0.4); }
+
+  /* CAUZE */
+  .cauze-section { background:var(--white); }
+  .cauze-grid { display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.5rem; }
+  .cauza-card { border-radius:16px;padding:1.8rem;border:1px solid var(--border);border-left:4px solid var(--border);position:relative; }
+  .cauza-card.c1 { border-left-color:var(--red); }
+  .cauza-card.c2 { border-left-color:#e07b00; }
+  .cauza-card.c3 { border-left-color:var(--blue); }
+  .cauza-card.c4 { border-left-color:#7b3fa5; }
+  .cauza-num { font-family:'DM Serif Display',serif;font-size:2.2rem;opacity:0.08;color:var(--navy);line-height:1;margin-bottom:0.3rem; }
+  .cauza-card h4 { font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--navy);margin-bottom:0.8rem; }
+  .cauza-card p { font-size:0.87rem;color:var(--text-muted);line-height:1.75; }
+  .cauza-stat { display:inline-block;margin-top:0.8rem;background:var(--bg);border-radius:8px;padding:0.4rem 0.8rem;font-size:0.78rem;font-weight:600;color:var(--navy); }
+
+  /* SOLUTII */
+  .solutii-section { background:var(--bg); }
+  .sol-grid { display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.5rem; }
+  .sol-card { background:var(--white);border-radius:16px;padding:1.8rem;border:1px solid var(--border); }
+  .sol-icon { width:44px;height:44px;border-radius:12px;background:var(--navy);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:1.2rem; }
+  .sol-card h4 { font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--navy);margin-bottom:0.8rem; }
+  .sol-card p { font-size:0.87rem;color:var(--text-muted);line-height:1.75; }
+  .sol-example { margin-top:0.8rem;background:rgba(59,109,17,0.07);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:0.5rem 0.8rem;font-size:0.8rem;color:#2a5008;line-height:1.5; }
+
+  /* CONCLUZII */
+  .concl-section { background:var(--navy); }
+  .concl-section .section-title { color:var(--white); }
+  .concl-section .section-label { color:var(--accent); }
+  .concl-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem; }
+  .concl-card { background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:1.6rem; }
+  .concl-num { font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--accent);opacity:0.4;margin-bottom:0.5rem; }
+  .concl-card h4 { font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--white);margin-bottom:0.7rem; }
+  .concl-card p { font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.7; }
+
+  /* PUNCTAJ */
+  .punctaj-section { background:var(--bg); }
+  .punctaj-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem; }
+  .pct-card { background:var(--white);border-radius:14px;padding:1.2rem;border:1px solid var(--border);text-align:center; }
+  .pct-val { font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--blue); }
+  .pct-label { font-size:0.78rem;color:var(--text-muted);margin-top:0.3rem;line-height:1.4; }
+  .pct-total { margin-top:1.5rem;background:var(--navy);border-radius:14px;padding:1.2rem 2rem;display:flex;align-items:center;justify-content:space-between; }
+  .pct-total-label { color:rgba(255,255,255,0.6);font-size:0.9rem; }
+  .pct-total-val { font-family:'DM Serif Display',serif;font-size:2rem;color:var(--accent); }
+
+  /* FOOTER */
+  footer { background:#050f1f;color:rgba(255,255,255,0.4);text-align:center;padding:2rem;font-size:0.8rem;line-height:1.8; }
+  footer strong { color:rgba(255,255,255,0.7); }
+  footer a { color:rgba(100,160,255,0.7);text-decoration:none; }
+  footer a:hover { color:var(--accent); }
+
+  @media(max-width:768px){
+    nav { padding:0 1.2rem; } .nav-links { display:none; }
+    .pib-grid,.deflator-grid,.concl-grid,.two-cols,.cauze-grid,.sol-grid { grid-template-columns:1fr; }
+    .stats-row,.punctaj-grid { grid-template-columns:1fr 1fr; }
+    .video-steps { grid-template-columns:1fr; }
+    .infog-row { grid-template-columns:1fr; }
+  }
+
+  /* ── HERO GRAPHICS ── */
+  .hero-chart-visual { position:absolute; right:4%; top:50%; transform:translateY(-50%); opacity:0.18; pointer-events:none; }
+  @media(max-width:1000px){ .hero-chart-visual { display:none; } }
+  .hero-floats { display:flex; justify-content:center; gap:1.2rem; margin-top:2rem; flex-wrap:wrap; }
+  .hfloat { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.13); border-radius:14px; padding:0.7rem 1.3rem; text-align:center; backdrop-filter:blur(4px); }
+  .hfloat-val { font-family:'DM Serif Display',serif; font-size:1.3rem; color:var(--accent); line-height:1; }
+  .hfloat-label { font-size:0.6rem; color:rgba(255,255,255,0.45); letter-spacing:0.08em; text-transform:uppercase; margin-top:3px; }
+
+  /* ── MOLDOVA FLAG STRIP ── */
+  .md-flag { display:flex; height:5px; border-radius:3px; overflow:hidden; margin:1rem 0 0.3rem; }
+  .md-flag div:nth-child(1){ flex:1; background:#003DA5; }
+  .md-flag div:nth-child(2){ flex:1; background:#FFCD00; }
+  .md-flag div:nth-child(3){ flex:1; background:#CC0001; }
+
+  /* ── PIB CARD ICONS ── */
+  .pib-card-icon { width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1rem; }
+  .pib-card.nominal .pib-card-icon { background:rgba(245,200,66,0.15); }
+  .pib-card.real .pib-card-icon { background:rgba(24,95,165,0.1); }
+
+  /* ── DEFLATOR FLOW ── */
+  .deflator-flow { display:flex; align-items:center; justify-content:center; gap:0; margin-top:2rem; flex-wrap:wrap; }
+  .dflow-box { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:14px; padding:1rem 1.2rem; text-align:center; min-width:130px; }
+  .dflow-box .dflow-icon { font-size:1.4rem; margin-bottom:0.4rem; }
+  .dflow-box .dflow-title { font-size:0.7rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent); margin-bottom:0.3rem; }
+  .dflow-box .dflow-val { font-family:'DM Serif Display',serif; font-size:1rem; color:#fff; }
+  .dflow-arrow { font-size:1.4rem; color:rgba(255,255,255,0.25); padding:0 0.6rem; }
+
+  /* ── CAUZA ICON ── */
+  .cauza-icon-wrap { width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:0.8rem; }
+  .cauza-card.c1 .cauza-icon-wrap { background:rgba(163,45,45,0.1); }
+  .cauza-card.c2 .cauza-icon-wrap { background:rgba(224,123,0,0.1); }
+  .cauza-card.c3 .cauza-icon-wrap { background:rgba(24,95,165,0.1); }
+  .cauza-card.c4 .cauza-icon-wrap { background:rgba(123,63,165,0.1); }
+
+  /* ── SOL CARD icon upgrade ── */
+  .sol-icon { border:2px solid var(--border); background:var(--bg); font-size:1.5rem; }
+
+  /* ════════════════════════════════════════
+     CANVA-STYLE INFOGRAPHIC
+  ════════════════════════════════════════ */
+  .canva-infog { background:#FAFBFF; border-radius:20px; overflow:hidden; box-shadow:0 25px 80px rgba(13,47,94,0.35); margin-top:2.5rem; border:1px solid rgba(255,255,255,0.08); }
+
+  /* Header */
+  .canva-hdr { background:linear-gradient(135deg,#0D2F5E 0%,#1a5a9e 55%,#185FA5 100%); padding:2.5rem 2.5rem 0; position:relative; overflow:hidden; }
+  .canva-hdr::before { content:'';position:absolute;width:350px;height:350px;border-radius:50%;background:rgba(245,200,66,0.09);top:-160px;right:-80px; }
+  .canva-hdr::after { content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.04);bottom:-100px;left:10%; }
+  .canva-hdr-inner { position:relative;z-index:1;text-align:center;padding-bottom:2rem; }
+  .canva-hdr-eyebrow { display:inline-flex;align-items:center;gap:8px;background:rgba(245,200,66,0.18);border:1px solid rgba(245,200,66,0.4);color:#F5C842;padding:5px 16px;border-radius:20px;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1.2rem; }
+  .canva-hdr-title { font-family:'DM Serif Display',serif;font-size:clamp(1.4rem,2.5vw,2rem);color:#fff;margin-bottom:0.4rem; }
+  .canva-hdr-sub { font-size:0.88rem;color:rgba(255,255,255,0.55); }
+  .canva-flag { display:flex;height:5px; }
+  .canva-flag div:nth-child(1){ flex:1;background:#003DA5; }
+  .canva-flag div:nth-child(2){ flex:1;background:#FFCD00; }
+  .canva-flag div:nth-child(3){ flex:1;background:#CC0001; }
+
+  /* KPI row */
+  .canva-kpis { display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-bottom:2px solid #eef2fa; }
+  .ckpi { padding:1.3rem 1rem;text-align:center;border-right:1px solid #eef2fa; }
+  .ckpi:last-child { border-right:none; }
+  .ckpi-icon { font-size:1.6rem;line-height:1;margin-bottom:0.5rem; }
+  .ckpi-val { font-family:'DM Serif Display',serif;font-size:1.7rem;line-height:1; }
+  .ckpi-val.knom { color:#185FA5; }
+  .ckpi-val.kpos { color:#3B6D11; }
+  .ckpi-val.kneg { color:#A32D2D; }
+  .ckpi-val.kwarn { color:#b5911a; }
+  .ckpi-label { font-size:0.68rem;color:#5a7094;margin-top:0.3rem;line-height:1.4; }
+
+  /* Year rows */
+  .canva-years { background:#fff; }
+  .cy-item { display:grid;grid-template-columns:80px 1fr;border-bottom:1px solid #eef2fa; }
+  .cy-item:last-child { border-bottom:none; }
+  .cy-left { display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.2rem 0.5rem;text-align:center; }
+  .cy-yr { font-family:'DM Serif Display',serif;font-size:1.65rem;line-height:1; }
+  .cy-tag { font-size:0.55rem;font-weight:700;letter-spacing:0.07em;padding:2px 7px;border-radius:8px;margin-top:0.4rem;white-space:nowrap; }
+  .cy-right { padding:1.2rem 1.5rem;display:flex;flex-direction:column;gap:0.65rem; }
+  .cy-cols { display:grid;grid-template-columns:1fr 1fr;gap:1rem; }
+  .cy-col-hd { font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem; }
+  .cy-col-hd.hblue { color:#185FA5; }
+  .cy-col-hd.hgreen { color:#3B6D11; }
+  .cy-col-hd.hred { color:#A32D2D; }
+  .cy-col-hd.hamber { color:#b5911a; }
+  .cy-col-hd.hteal { color:#0077B6; }
+  .cy-col-big { font-family:'DM Serif Display',serif;font-size:1.2rem;line-height:1.1; }
+  .cy-col-small { font-size:0.71rem;color:#5a7094;margin-top:0.2rem;line-height:1.4; }
+  .cy-barchart { display:flex;flex-direction:column;gap:0.35rem; }
+  .cy-brow { display:grid;grid-template-columns:50px 1fr 46px;align-items:center;gap:0.5rem; }
+  .cy-brow-lbl { font-size:0.63rem;color:#8899aa;text-align:right; }
+  .cy-brow-track { height:8px;background:#eef2fa;border-radius:4px;overflow:hidden; }
+  .cy-brow-fill { height:100%;border-radius:4px;transition:width 0.8s ease; }
+  .cy-brow-val { font-size:0.68rem;font-weight:700;color:#1a2a40; }
+  .cy-evt { font-size:0.74rem;background:#f5f8ff;border-radius:8px;padding:0.45rem 0.8rem;border-left:3px solid #c0d0e8;color:#5a7094;line-height:1.5; }
+  .cy-evt strong { color:#0D2F5E; }
+
+  /* Year color themes */
+  .cy-item.yr-stable .cy-left { background:#EBF4FF; }
+  .cy-item.yr-stable .cy-yr { color:#185FA5; }
+  .cy-item.yr-stable .cy-tag { background:#185FA5;color:#fff; }
+  .cy-item.yr-covid .cy-left { background:#FFF0F0; }
+  .cy-item.yr-covid .cy-yr { color:#A32D2D; }
+  .cy-item.yr-covid .cy-tag { background:#A32D2D;color:#fff; }
+  .cy-item.yr-record .cy-left { background:#EDFAEE; }
+  .cy-item.yr-record .cy-yr { color:#3B6D11; }
+  .cy-item.yr-record .cy-tag { background:#3B6D11;color:#fff; }
+  .cy-item.yr-crisis .cy-left { background:#FFF3E0; }
+  .cy-item.yr-crisis .cy-yr { color:#CC5500; }
+  .cy-item.yr-crisis .cy-tag { background:#CC5500;color:#fff; }
+  .cy-item.yr-recovery .cy-left { background:#EFF8FF; }
+  .cy-item.yr-recovery .cy-yr { color:#0077B6; }
+  .cy-item.yr-recovery .cy-tag { background:#0077B6;color:#fff; }
+  .cy-item.yr-stagnation .cy-left { background:#FFFBEB; }
+  .cy-item.yr-stagnation .cy-yr { color:#b5911a; }
+  .cy-item.yr-stagnation .cy-tag { background:#F5C842;color:#0D2F5E; }
+
+  /* Canva footer */
+  .canva-concl { background:linear-gradient(135deg,#0D2F5E,#185FA5);padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap; }
+  .canva-concl-icon { font-size:2rem;flex-shrink:0; }
+  .canva-concl-text h4 { font-family:'DM Serif Display',serif;color:#F5C842;font-size:1.1rem;margin-bottom:0.3rem; }
+  .canva-concl-text p { font-size:0.82rem;color:rgba(255,255,255,0.72);line-height:1.6; }
+  .canva-sources { background:#050f1f;padding:0.7rem 2rem;font-size:0.67rem;color:rgba(255,255,255,0.3);text-align:center; }
+
+  @media(max-width:600px){
+    .canva-kpis { grid-template-columns:1fr 1fr; }
+    .cy-item { grid-template-columns:64px 1fr; }
+    .cy-cols { grid-template-columns:1fr; }
+    .cy-yr { font-size:1.3rem; }
+    .canva-concl { flex-direction:column; }
+    .deflator-flow { flex-direction:column; }
+    .dflow-arrow { transform:rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">PIB <span>Moldova</span></div>
+  <ul class="nav-links">
+    <li><a href="#teorie">Teorie</a></li>
+    <li><a href="#grafice">Grafice</a></li>
+    <li><a href="#tabele">Tabele</a></li>
+    <li><a href="#video">Video</a></li>
+    <li><a href="#infografic">Infografic</a></li>
+    <li><a href="#cauze">Cauze</a></li>
+    <li><a href="#solutii">Soluții</a></li>
+  </ul>
+  <div class="nav-badge">PAA2411G</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-dots tl"></div><div class="hero-dots br"></div>
+
+  <!-- Floating bar-chart SVG illustration (desktop only) -->
+  <div class="hero-chart-visual">
+    <svg width="300" height="280" viewBox="0 0 300 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="240" x2="290" y2="240" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <line x1="0" y1="180" x2="290" y2="180" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <line x1="0" y1="120" x2="290" y2="120" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <line x1="0" y1="60" x2="290" y2="60" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+      <rect x="8"  y="152" width="34" height="88" rx="5" fill="rgba(245,200,66,0.55)"/>
+      <rect x="54" y="188" width="34" height="52" rx="5" fill="rgba(245,200,66,0.35)"/>
+      <rect x="100" y="108" width="34" height="132" rx="5" fill="rgba(245,200,66,0.75)"/>
+      <rect x="146" y="130" width="34" height="110" rx="5" fill="rgba(245,200,66,0.55)"/>
+      <rect x="192" y="86" width="34" height="154" rx="5" fill="rgba(245,200,66,0.85)"/>
+      <rect x="238" y="60" width="34" height="180" rx="5" fill="rgba(245,200,66,0.95)"/>
+      <polyline points="25,152 71,188 117,108 163,130 209,86 255,60" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-dasharray="7,4" fill="none" stroke-linecap="round"/>
+      <circle cx="25"  cy="152" r="4" fill="white" opacity="0.7"/>
+      <circle cx="71"  cy="188" r="4" fill="white" opacity="0.7"/>
+      <circle cx="117" cy="108" r="4" fill="white" opacity="0.7"/>
+      <circle cx="163" cy="130" r="4" fill="white" opacity="0.7"/>
+      <circle cx="209" cy="86"  r="4" fill="white" opacity="0.7"/>
+      <circle cx="255" cy="60"  r="5" fill="#F5C842" opacity="0.9"/>
+      <text x="8"   y="258" font-size="9" fill="rgba(255,255,255,0.35)" font-family="sans-serif">2019</text>
+      <text x="54"  y="258" font-size="9" fill="rgba(255,255,255,0.35)" font-family="sans-serif">2020</text>
+      <text x="100" y="258" font-size="9" fill="rgba(255,255,255,0.35)" font-family="sans-serif">2021</text>
+      <text x="146" y="258" font-size="9" fill="rgba(255,255,255,0.35)" font-family="sans-serif">2022</text>
+      <text x="192" y="258" font-size="9" fill="rgba(255,255,255,0.35)" font-family="sans-serif">2023</text>
+      <text x="238" y="258" font-size="9" fill="rgba(255,255,255,0.35)" font-family="sans-serif">2024</text>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <img src="logo.png" alt="Logo instituție" style="display:block;margin:0 auto 1.2rem;height:72px;width:auto;object-fit:contain;mix-blend-mode:multiply;">
+    <div class="hero-tag">Studiu Individual · Macroeconomie</div>
+    <h1>Diferența dintre<br><em>PIB Nominal</em><br>și PIB Real</h1>
+    <p class="hero-sub">Relevanța acesteia în reflectarea creșterii economice a Republicii Moldova în perioada 2019–2024</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><strong>Autori</strong>Țaga Renata și Arghiri Bianca</div>
+      <div class="hero-meta-item"><strong>Grupa</strong>PAA2411G</div>
+    </div>
+    <!-- Floating key stats -->
+    <div class="hero-floats">
+      <div class="hfloat"><div class="hfloat-val">210→323</div><div class="hfloat-label">mld. lei PIB nominal</div></div>
+      <div class="hfloat"><div class="hfloat-val">+54%</div><div class="hfloat-label">creștere nominală 6 ani</div></div>
+      <div class="hfloat"><div class="hfloat-val">28,6%</div><div class="hfloat-label">inflație maximă 2022</div></div>
+      <div class="hfloat"><div class="hfloat-val">−5,9%</div><div class="hfloat-label">creștere reală 2022</div></div>
+    </div>
+  </div>
+  <div class="hero-scroll">SCROLL <div class="scroll-arrow">↓</div></div>
+</section>
+
+<!-- TEORIE -->
+<section class="pib-section" id="teorie">
+  <div class="container">
+    <div class="section-label">Noțiuni cheie</div>
+    <div class="accent-line"></div>
+    <h2 class="section-title">Ce este PIB? — Definiții și concepte</h2>
+    <div class="md-flag"><div></div><div></div><div></div></div>
+    <p class="section-desc"><strong>Produsul Intern Brut (PIB)</strong> reprezintă valoarea totală de piață a producției finale de bunuri și servicii dintr-o economie, într-o perioadă determinată. Descrie dimensiunea economiei, nivelul de activitate și bunăstarea populației. Există două moduri esențiale de măsurare, cu implicații diferite în analiza economică.
+    <span class="src">— <a href="https://statistica.gov.md/ro/conturi-nationale-9494.html" target="_blank">BNS · Conturi Naționale</a> · <a href="https://www.imf.org/en/Countries/MDA" target="_blank">IMF Moldova</a></span></p>
+    <div class="pib-grid">
+      <div class="pib-card nominal">
+        <div class="pib-card-icon">💹</div>
+        <div class="pib-card-tag">Indicator 01</div>
+        <h3>PIB Nominal</h3>
+        <p>Măsoară valoarea producției de bunuri și servicii folosind <strong>prețurile curente</strong> din anul respectiv. Nu elimină efectul inflației — crește chiar dacă producția reală stagnează. Este util pentru comparații internaționale la un moment dat, dar nu reflectă creșterea reală a bunăstării.</p>
+        <div class="formula-box">PIB<sub>nominal</sub> = Σ (Q₁ × P₁, curent)</div>
+      </div>
+      <div class="pib-card real">
+        <div class="pib-card-icon">📊</div>
+        <div class="pib-card-tag" style="color:var(--blue)">Indicator 02</div>
+        <h3>PIB Real</h3>
+        <p>Măsoară valoarea producției ajustată pentru inflație, folosind <strong>prețurile unui an de bază</strong> (prețuri constante). Reflectă creșterea economică autentică — arată dacă s-au produs <em>mai multe</em> bunuri și servicii, nu doar la prețuri mai mari. Este indicatorul preferat pentru analiza evoluției în timp.</p>
+        <div class="formula-box">PIB<sub>real</sub> = PIB<sub>nominal</sub> ÷ Deflator × 100</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEFLATOR -->
+<section class="deflator-section" id="deflator">
+  <div class="container">
+    <div class="section-label">Instrumentul de corecție</div>
+    <div class="accent-line" style="background:var(--accent)"></div>
+    <h2 class="section-title">Deflatorul PIB și inflația</h2>
+    <p class="section-desc">Factorul care convertește valorile nominale în valori reale, eliminând distorsiunea cauzată de creșterea prețurilor.</p>
+    <div class="deflator-formula">
+      <p>Formula deflatorului PIB</p>
+      <div class="formula">Deflator PIB = (PIB nominal ÷ PIB real) × 100</div>
+    </div>
+    <div class="deflator-grid">
+      <div class="deflator-card">
+        <h4>Ce măsoară deflatorul?</h4>
+        <p>Spre deosebire de IPC (care măsoară doar bunurile de consum casnic), deflatorul PIB acoperă <em>toate</em> bunurile și serviciile produse în economie: investiții, servicii guvernamentale, exporturi nete. Este mai cuprinzător și mai precis ca indicator de inflație la nivel macroeconomic.</p>
+      </div>
+      <div class="deflator-card">
+        <h4>Inflația — factor de distorsiune</h4>
+        <p>Creșterea generalizată și persistentă a prețurilor face ca PIB nominal să crească chiar și atunci când producția reală stagnează sau scade. Cu aceeași sumă de bani se cumpără mai puține bunuri — puterea de cumpărare scade. Fără corectarea prin deflator, analiza economică este fundamental greșită.</p>
+      </div>
+    </div>
+    <!-- Visual flow -->
+    <div class="deflator-flow">
+      <div class="dflow-box">
+        <div class="dflow-icon">💰</div>
+        <div class="dflow-title">PIB Nominal</div>
+        <div class="dflow-val">272,6 mld. lei</div>
+      </div>
+      <div class="dflow-arrow">÷</div>
+      <div class="dflow-box">
+        <div class="dflow-icon">📉</div>
+        <div class="dflow-title">Deflator 2022</div>
+        <div class="dflow-val">119,8</div>
+      </div>
+      <div class="dflow-arrow">×</div>
+      <div class="dflow-box">
+        <div class="dflow-icon">💯</div>
+        <div class="dflow-title">Factor</div>
+        <div class="dflow-val">100</div>
+      </div>
+      <div class="dflow-arrow">=</div>
+      <div class="dflow-box" style="background:rgba(163,45,45,0.2);border-color:rgba(163,45,45,0.4)">
+        <div class="dflow-icon">📊</div>
+        <div class="dflow-title" style="color:#ff9999">PIB Real</div>
+        <div class="dflow-val" style="color:#ff9999">227,5 mld. lei</div>
+      </div>
+    </div>
+
+    <div class="alert-box">
+      <strong>⚠ Cazul Moldova 2022:</strong> Inflația IPC a atins 28,6% (deflator ~31,8%). PIB nominal creștea cu +12,7%, dar economia reală <strong>scăzuse cu −5,9%</strong>. Cetățenii vedeau că „economia crește" pe hârtie, dar puterea lor de cumpărare se prăbușea. Fără PIB real, tabloul economic era complet deformat.
+      <div class="src-block">Surse: <a href="https://www.bnm.md/ro/content/raportul-asupra-inflatiei-nr-1-2024" target="_blank">BNM — Raport inflație 2024</a> · <a href="https://statistica.gov.md/ro/produsul-intern-brut-in-trimestrul-iv-si-ianuarie-decembrie-2022-9497_60340.html" target="_blank">BNS — PIB 2022 comunicat oficial</a> · <a href="https://www.macrotrends.net/countries/MDA/moldova/gdp-growth-rate" target="_blank">Macrotrends / Banca Mondială</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- GRAFICE -->
+<section class="charts-section" id="grafice">
+  <div class="container">
+    <div class="section-label">Grafice</div>
+    <div class="accent-line"></div>
+    <h2 class="section-title">Grafice interactive</h2>
+    <p class="section-desc">Date pentru Republica Moldova 2019–2024, elaborate pe baza surselor BNS, Banca Mondială și FMI. Treceți cu mouse-ul peste grafic pentru detalii.</p>
+
+    <div class="chart-wrapper" style="margin-top:2.5rem">
+      <div class="chart-header">
+        <div><div class="chart-title">PIB nominal vs. rata de creștere reală și inflație</div><div class="chart-subtitle">Moldova 2019–2024 · grafic combinat bare + linii</div></div>
+        <div class="chart-badge">Grafic 1</div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-box" style="background:rgba(24,95,165,0.75)"></div>PIB nominal (mld. lei)</div>
+        <div class="legend-item"><div class="legend-line" style="background:#3B6D11"></div>Creștere PIB real (%)</div>
+        <div class="legend-item"><div class="legend-line" style="background:#A32D2D"></div>Inflație IPC (%)</div>
+      </div>
+      <div class="chart-canvas-wrap"><canvas id="chart1"></canvas></div>
+      <div class="chart-insight"><strong>Citirea graficului:</strong> Barele albastre (PIB nominal) cresc constant, dar creșterea reală (linia verde) a oscilat dramatic. În 2022, barele nominale cresc, dar linia verde scade sub zero — inflația de 28,6% a „furat" creșterea aparentă.</div>
+      <div class="chart-source">
+        <strong style="color:var(--navy);font-size:0.75rem;">Surse date Grafic 1:</strong><br>
+        Ratele de creștere reală confirmate de <a href="https://www.macrotrends.net/countries/MDA/moldova/gdp-growth-rate" target="_blank" style="color:var(--blue)">macrotrends.net · Banca Mondială</a> (2020: −8,28% · 2021: +13,93% · 2022: −5,02%) ·
+        <a href="https://statistica.gov.md/ro/conturi-nationale-9494.html" target="_blank" style="color:var(--blue)">BNS — Conturi Naționale</a> (sursă primară PIB nominal anual) ·
+        <a href="https://tradingeconomics.com/moldova/gdp-annual-growth-rate" target="_blank" style="color:var(--blue)">Trading Economics</a> (confirmare 2023–2024) ·
+        Ratele nominale calculate prin formula: (PIB<sub>an curent</sub> − PIB<sub>an anterior</sub>) / PIB<sub>an anterior</sub> × 100 ·
+        Inflația IPC: <a href="https://www.bnm.md/ro/content/raportul-asupra-inflatiei-nr-1-2024" target="_blank" style="color:var(--blue)">BNM — Raport inflație 2024</a> ·
+        <a href="https://www.worldbank.org/ro/country/moldova/brief/moldova-economic-update" target="_blank" style="color:var(--blue)">Banca Mondială — Moldova Economic Update</a>
+      </div>
+    </div>
+
+    <div class="chart-wrapper">
+      <div class="chart-header">
+        <div><div class="chart-title">Creștere nominală vs. reală — Decalajul cauzat de inflație</div><div class="chart-subtitle">Moldova 2019–2024 · comparație bare grupate</div></div>
+        <div class="chart-badge">Grafic 2</div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-box" style="background:rgba(24,95,165,0.75)"></div>Creștere PIB nominal (%)</div>
+        <div class="legend-item"><div class="legend-box" style="background:rgba(59,109,17,0.75)"></div>Creștere PIB real (%)</div>
+        <div class="legend-item"><div class="legend-box" style="background:rgba(163,45,45,0.8)"></div>Creștere reală negativă</div>
+      </div>
+      <div class="chart-canvas-wrap"><canvas id="chart2"></canvas></div>
+      <div class="stats-row">
+        <div class="stat-card success"><div class="stat-val">+13,9%</div><div class="stat-label">Creștere reală 2021<br>(record național)</div></div>
+        <div class="stat-card danger"><div class="stat-val">18,6 pp</div><div class="stat-label">Decalaj maxim 2022<br>(inflația distorsionează)</div></div>
+        <div class="stat-card warning"><div class="stat-val">+0,1%</div><div class="stat-label">Creștere reală 2024<br>(stagnare economică)</div></div>
+      </div>
+      <div class="chart-source" style="margin-top:0.8rem">
+        <strong style="color:var(--navy);font-size:0.75rem;">Surse date Grafic 2:</strong><br>
+        <a href="https://www.macrotrends.net/countries/MDA/moldova/gdp-growth-rate" target="_blank" style="color:var(--blue)">macrotrends.net/countries/MDA/moldova/gdp-growth-rate</a> — toate ratele de creștere reală confirmate ·
+        <a href="https://statistica.gov.md/ro/conturi-nationale-9494.html" target="_blank" style="color:var(--blue)">statistica.gov.md — Conturi Naționale</a> — sursă primară PIB anual ·
+        <a href="https://tradingeconomics.com/moldova/gdp-annual-growth-rate" target="_blank" style="color:var(--blue)">tradingeconomics.com/moldova/gdp-annual-growth-rate</a> — confirmare 2023–2024 ·
+        Creșterile nominale calculate din PIB absolute: formula (PIB<sub>n</sub> − PIB<sub>n-1</sub>) / PIB<sub>n-1</sub> × 100
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TABELE -->
+<section class="tables-section" id="tabele">
+  <div class="container">
+    <div class="section-label">Tabele</div>
+    <div class="accent-line"></div>
+    <h2 class="section-title">Tabele de date</h2>
+    <p class="section-desc">Comparație detaliată an cu an, cu evenimentele cheie care au influențat economia Moldovei în perioada 2019–2024.</p>
+
+    <div class="table-wrapper" style="margin-top:2.5rem">
+      <div class="chart-header">
+        <div><div class="chart-title">Comparație PIB nominal vs. PIB real — Moldova (2019–2024)</div><div class="chart-subtitle">Cu deflator PIB, inflație IPC și eveniment cheie</div></div>
+        <div class="chart-badge">Tabel 1</div>
+      </div>
+      <table>
+        <thead><tr><th>Anul</th><th>PIB nominal<br><small style="font-weight:400;opacity:0.8">(mld. lei)</small></th><th>Creștere nominală<br><small style="font-weight:400;opacity:0.8">(%)</small></th><th>Creștere reală<br><small style="font-weight:400;opacity:0.8">(%)</small></th><th>Deflator PIB<br><small style="font-weight:400;opacity:0.8">(aprox.)</small></th><th>Inflație IPC<br><small style="font-weight:400;opacity:0.8">(%)</small></th><th>Eveniment cheie</th></tr></thead>
+        <tbody>
+          <tr><td>2019</td><td>210,1</td><td class="pos">+11,7%</td><td class="pos">+3,6% <span class="badge badge-pos">↑</span></td><td>107,8</td><td>4,8%</td><td class="td-event">Creștere stabilă pre-COVID</td></tr>
+          <tr><td>2020</td><td>192,6*</td><td class="neg">−8,3%</td><td class="neg">−8,3% <span class="badge badge-neg">↓</span></td><td>100,0</td><td>3,8%</td><td class="td-event">Pandemia COVID-19 + secetă severă</td></tr>
+          <tr><td>2021</td><td>241,9</td><td class="pos">+25,6%</td><td class="pos">+13,9% <span class="badge badge-pos">↑ record</span></td><td>110,3</td><td>5,1%</td><td class="td-event">Redresare post-COVID; an agricol bun</td></tr>
+          <tr><td>2022</td><td>272,6</td><td class="pos">+12,7%</td><td class="neg">−5,9% <span class="badge badge-neg">↓</span></td><td>119,8</td><td class="warn">28,6%</td><td class="td-event">Război Ucraina; criză energetică; hiperinflație</td></tr>
+          <tr><td>2023</td><td>300,4</td><td class="pos">+10,2%</td><td class="pos">+1,2% <span class="badge badge-pos">↑</span></td><td>109,0</td><td>13,4%</td><td class="td-event">Redresare parțială; inflație în scădere</td></tr>
+          <tr><td>2024</td><td>323,8</td><td class="pos">+7,8%</td><td class="pos">+0,1% <span class="badge badge-warn">≈0</span></td><td>107,7</td><td>4,7%</td><td class="td-event">Stagnare; secetă severă; instabilitate regională</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="7" style="font-size:0.73rem;color:var(--text-muted);padding:10px 14px;line-height:1.8;">
+          <strong>Surse exacte per an:</strong><br>
+          <strong>2019</strong> — PIB 210,1 mld. lei / +3,6% real: <a href="https://www.mold-street.com/?go=news&n=10184" target="_blank" style="color:var(--blue)">MoldStreet</a> · <a href="https://www.macrotrends.net/countries/MDA/moldova/gdp-growth-rate" target="_blank" style="color:var(--blue)">Macrotrends/Banca Mondială</a><br>
+          <strong>2020</strong> — PIB ~192,6 mld. lei / −8,3% real: <a href="https://old.statistica.md/newsview.php?l=ro&idc=168&id=6940" target="_blank" style="color:var(--blue)">BNS</a> · <a href="https://www.mold-street.com/?go=news&n=14200" target="_blank" style="color:var(--blue)">MoldStreet</a> · <a href="https://www.macrotrends.net/countries/MDA/moldova/gdp-growth-rate" target="_blank" style="color:var(--blue)">Macrotrends</a> (−8,28%) · Inflație 3,8%: <a href="https://www.worldbank.org/ro/country/moldova/brief/moldova-economic-update" target="_blank" style="color:var(--blue)">Banca Mondială</a><br>
+          <strong>2021</strong> — PIB 241,9 mld. lei / +13,9% real: <a href="http://www.infotag.md/economics-ro/298025/" target="_blank" style="color:var(--blue)">Infotag</a> · <a href="https://www.mold-street.com/?go=news&n=13784" target="_blank" style="color:var(--blue)">MoldStreet</a> · <a href="https://www.macrotrends.net/countries/MDA/moldova/gdp-growth-rate" target="_blank" style="color:var(--blue)">Macrotrends</a> (+13,93%)<br>
+          <strong>2022</strong> — PIB 272,6 mld. lei / −5,9% real: <a href="https://statistica.gov.md/ro/produsul-intern-brut-in-trimestrul-iv-si-ianuarie-decembrie-2022-9497_60340.html" target="_blank" style="color:var(--blue)">BNS comunicat oficial</a> · Inflație 28,6%: <a href="https://www.bnm.md/ro/content/raportul-asupra-inflatiei-nr-1-2024" target="_blank" style="color:var(--blue)">BNM Raport inflație</a><br>
+          <strong>2023</strong> — PIB 300,4 mld. lei / +1,2% real: <a href="https://www.infotag.md/economics-ro/322880/" target="_blank" style="color:var(--blue)">Infotag</a> · <a href="https://statistica.gov.md/ro/produsul-intern-brut-in-trimestrul-i-2023-9497_60456.html" target="_blank" style="color:var(--blue)">BNS trim. I 2023</a> · Inflație 13,4%: <a href="https://www.bnm.md/ro/content/raportul-asupra-inflatiei-nr-1-2024" target="_blank" style="color:var(--blue)">BNM</a><br>
+          <strong>2024</strong> — PIB 323,8 mld. lei / +0,1% real: <a href="https://statistica.gov.md/ro/produsul-intern-brut-in-trimestrul-iv-si-anul-2024-9497_61702.html" target="_blank" style="color:var(--blue)">BNS comunicat oficial 2024</a> · <a href="https://mded.gov.md/wp-content/uploads/2025/04/Raport-sit-macro-2024-1.pdf" target="_blank" style="color:var(--blue)">MDED Raport macro 2024</a><br>
+          <em>Deflator PIB calculat manual: Deflator = (PIB nominal / PIB real la prețuri 2015) × 100. Sursă centrală: <a href="https://statistica.gov.md/ro/conturi-nationale-9494.html" target="_blank" style="color:var(--blue)">statistica.gov.md — Conturi Naționale</a></em>
+        </td></tr></tfoot>
+      </table>
+      <div class="table-conclusion warn-bg"><strong>Concluzie Tabel 1:</strong> În 2022, PIB nominal a crescut cu +12,7%, însă inflația de 28,6% a dus la o scădere reală a economiei cu −5,9%. Aceasta demonstrează că cifrele nominale pot fi profund înșelătoare în analiza economică.</div>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="chart-header">
+        <div><div class="chart-title">Decalajul dintre creșterea nominală și cea reală — efectul inflației</div><div class="chart-subtitle">Diferența în puncte procentuale per an, 2019–2024</div></div>
+        <div class="chart-badge">Tabel 2</div>
+      </div>
+      <table class="t2">
+        <thead><tr><th>Anul</th><th>Creștere nominală (%)</th><th>Creștere reală (%)</th><th>Diferența (nominal − real)</th><th>Inflație IPC (%)</th><th>Interpretare</th></tr></thead>
+        <tbody>
+          <tr><td>2019</td><td class="pos">+11,7%</td><td class="pos">+3,6%</td><td class="warn">8,1 pp</td><td>4,8%</td><td class="td-event">Decalaj mic — inflație moderată</td></tr>
+          <tr><td>2020</td><td class="neg">−8,3%</td><td class="neg">−8,3%</td><td style="color:var(--text-muted)">≈ 0 pp</td><td>3,8%</td><td class="td-event">Decalaj minim — inflație scăzută; criza a fost reală</td></tr>
+          <tr><td>2021</td><td class="pos">+25,6%</td><td class="pos">+13,9%</td><td class="warn">11,7 pp</td><td>5,1%</td><td class="td-event">Inflație începe să crească; creștere reală totuși mare</td></tr>
+          <tr><td>2022</td><td class="pos">+12,7%</td><td class="neg">−5,9%</td><td class="neg"><strong>18,6 pp ⚠</strong></td><td class="warn">28,6%</td><td class="td-event" style="color:var(--red);font-weight:600">ALARMANT: nominal pozitiv, real negativ!</td></tr>
+          <tr><td>2023</td><td class="pos">+10,2%</td><td class="pos">+1,2%</td><td class="warn">9,0 pp</td><td>13,4%</td><td class="td-event">Inflație în scădere; creștere reală minimă</td></tr>
+          <tr><td>2024</td><td class="pos">+7,8%</td><td class="pos">+0,1%</td><td class="warn">7,7 pp</td><td>4,7%</td><td class="td-event">Creștere aproape zero în termeni reali — stagnare</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="6" style="font-size:0.73rem;color:var(--text-muted);padding:10px 14px;line-height:1.8;">
+          pp = puncte procentuale · Diferența = Creștere nominală − Creștere reală (calculat din datele BNS)<br>
+          <strong>Surse creșteri reale:</strong> <a href="https://www.macrotrends.net/countries/MDA/moldova/gdp-growth-rate" target="_blank" style="color:var(--blue)">macrotrends.net · Banca Mondială</a> · <a href="https://statistica.gov.md/ro/conturi-nationale-9494.html" target="_blank" style="color:var(--blue)">BNS — Conturi Naționale</a> · <a href="https://tradingeconomics.com/moldova/gdp-annual-growth-rate" target="_blank" style="color:var(--blue)">Trading Economics</a><br>
+          <strong>Surse nominale:</strong> <a href="http://www.infotag.md/economics-ro/298025/" target="_blank" style="color:var(--blue)">Infotag 2021</a> · <a href="https://www.mold-street.com/?go=news&n=10184" target="_blank" style="color:var(--blue)">MoldStreet 2019</a> · <a href="https://statistica.gov.md/ro/produsul-intern-brut-in-trimestrul-iv-si-ianuarie-decembrie-2022-9497_60340.html" target="_blank" style="color:var(--blue)">BNS 2022</a> · <a href="https://statistica.gov.md/ro/produsul-intern-brut-in-trimestrul-iv-si-anul-2024-9497_61702.html" target="_blank" style="color:var(--blue)">BNS 2024</a>
+        </td></tr></tfoot>
+      </table>
+      <div class="two-cols">
+        <div class="mini-card danger-bg"><strong>2022 — cazul extrem:</strong>Cetățenii vedeau că PIB crește cu +12,7%, dar economiseai mai greu — prețurile crescuseră cu 28,6%, iar producția reală scăzuse cu aproape 6%.</div>
+        <div class="mini-card success-bg"><strong>2021 — redresare veritabilă:</strong>Creșterea reală de +13,9% a fost cea mai mare din istoria independentă a Moldovei — confirmată și de PIB real, nu doar nominal.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO -->
+<section class="video-section" id="video">
+  <div class="container">
+    <div class="section-label">Video</div>
+    <div class="accent-line"></div>
+    <h2 class="section-title">Explicație video</h2>
+    <p class="section-desc">Video realizat de autori, explicând diferența dintre PIB nominal și real cu exemple concrete din Moldova 2019–2024.</p>
+
+    <!-- ══════════════════════════════════════════════════════
+         PLACEHOLDER — când aveți videoul, ștergeți blocul de
+         mai jos și decomentați blocul <video> de după el.
+         ══════════════════════════════════════════════════════ -->
+    <div style="margin-top:2rem;border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(13,47,94,0.15);">
+      <video src="IMG_0639.MOV" controls style="width:100%;display:block;border:none;"></video>
+    </div>
+    <p style="font-size:0.75rem;color:#aab;margin-top:0.6rem">Video realizat de Țaga Renata și Arghiri Bianca · PAA2411G</p>
+  </div>
+</section>
+
+<!-- INFOGRAFIC -->
+<section class="infographic-section" id="infografic">
+  <div class="container">
+    <div class="section-label">Infografic</div>
+    <div class="accent-line" style="background:var(--accent)"></div>
+    <h2 class="section-title">Infografic — Cronologia PIB Moldova</h2>
+    <p class="section-desc">Rezumat vizual an cu an: PIB nominal vs. creștere reală, cu evenimentul economic definitoriu pentru fiecare perioadă.</p>
+
+    <div class="canva-infog">
+
+      <!-- ── HEADER ── -->
+      <div class="canva-hdr">
+        <div class="canva-hdr-inner">
+          <div class="canva-hdr-eyebrow">📊 Date oficiale · BNS · Banca Mondială · FMI</div>
+          <div class="canva-hdr-title">PIB Nominal vs. Creștere Reală</div>
+          <div class="canva-hdr-sub">Republica Moldova · 2019–2024 · Studiu de caz macroeconomic</div>
+        </div>
+        <div class="canva-flag"><div></div><div></div><div></div></div>
+      </div>
+
+      <!-- ── KPIs ── -->
+      <div class="canva-kpis">
+        <div class="ckpi">
+          <div class="ckpi-icon">📈</div>
+          <div class="ckpi-val knom">+54%</div>
+          <div class="ckpi-label">Creștere nominală<br>cumulată 2019–2024</div>
+        </div>
+        <div class="ckpi">
+          <div class="ckpi-icon">🏆</div>
+          <div class="ckpi-val kpos">+13,9%</div>
+          <div class="ckpi-label">Record creștere reală<br>2021</div>
+        </div>
+        <div class="ckpi">
+          <div class="ckpi-icon">⚠️</div>
+          <div class="ckpi-val kneg">−5,9%</div>
+          <div class="ckpi-label">Cel mai slab an real<br>2022 (criză energetică)</div>
+        </div>
+        <div class="ckpi">
+          <div class="ckpi-icon">🔥</div>
+          <div class="ckpi-val kwarn">28,6%</div>
+          <div class="ckpi-label">Inflație maximă IPC<br>2022</div>
+        </div>
+      </div>
+
+      <!-- ── YEAR ROWS ── -->
+      <div class="canva-years">
+
+        <!-- 2019 -->
+        <div class="cy-item yr-stable">
+          <div class="cy-left">
+            <div class="cy-yr">2019</div>
+            <div class="cy-tag">STABIL</div>
+          </div>
+          <div class="cy-right">
+            <div class="cy-cols">
+              <div>
+                <div class="cy-col-hd hblue">PIB NOMINAL</div>
+                <div class="cy-col-big" style="color:#185FA5">210,1 mld. lei</div>
+                <div class="cy-col-small">Creștere nominală: +11,7%</div>
+              </div>
+              <div>
+                <div class="cy-col-hd hgreen">CREȘTERE REALĂ</div>
+                <div class="cy-col-big" style="color:#3B6D11">+3,6%</div>
+                <div class="cy-col-small">Economie pre-COVID sănătoasă</div>
+              </div>
+            </div>
+            <div class="cy-barchart">
+              <div class="cy-brow">
+                <div class="cy-brow-lbl">Nominal</div>
+                <div class="cy-brow-track"><div class="cy-brow-fill" style="width:46%;background:#185FA5"></div></div>
+                <div class="cy-brow-val" style="color:#185FA5">+11,7%</div>
+              </div>
+              <div class="cy-brow">
+                <div class="cy-brow-lbl">Real</div>
+                <div class="cy-brow-track"><div class="cy-brow-fill" style="width:26%;background:#3B6D11"></div></div>
+                <div class="cy-brow-val" style="color:#3B6D11">+3,6%</div>
+              </div>
+            </div>
+            <div class="cy-evt">Inflație IPC: <strong>4,8%</strong> · Deflator PIB: <strong>107,8</strong> · Decalaj nominal–real: <strong>8,1 pp</strong></div>
+          </div>
+        </div>
+
+        <!-- 2020 -->
+        <div class="cy-item yr-covid">
+          <div class="cy-left">
+            <div class="cy-yr">2020</div>
+            <div class="cy-tag">🦠 COVID</div>
+          </div>
+          <div class="cy-right">
+            <div class="cy-cols">
+              <div>
+                <div class="cy-col-hd hred">PIB NOMINAL</div>
+                <div class="cy-col-big" style="color:#A32D2D">192,6 mld. lei</div>
+                <div class="cy-col-small">Creștere nominală: <strong style="color:#A32D2D">−8,3%</strong></div>
+              </div>
+              <div>
+                <div class="cy-col-hd hred">CREȘTERE REALĂ</div>
+                <div class="cy-col-big" style="color:#A32D2D">−8,3%</div>
+                <div class="cy-col-small">Pandemie COVID-19 + secetă</div>
+              </div>
+            </div>
+            <div class="cy-barchart">
+              <div class="cy-brow">
+                <div class="cy-brow-lbl">Nominal</div>
+                <div class="cy-brow-track"><div class="cy-brow-fill" style="width:32%;background:#A32D2D"></div></div>
+                <div class="cy-brow-val" style="color:#A32D2D">−8,3%</div>
+              </div>
+              <div class="cy-brow">
+                <div class="cy-brow-lbl">Real</div>
+                <div class="cy-brow-track"><div class="cy-brow-fill" style="width:32%;background:#A32D2D"></div></div>
+                <div class="cy-brow-val" style="color:#A32D2D">−8,3%</div>
+              </div>
+            </div>
+            <div class="cy-evt" style="border-left-color:#A32D2D;background:#fff5f5;">Inflație IPC: <strong>3,8%</strong> · Deflator PIB: <strong>100,0</strong> · Criză simetrică — decalaj: <strong>≈ 0 pp</strong></div>
+          </div>
+        </div>
+
+        <!-- 2021 -->
+        <div class="cy-item yr-record">
+          <div class="cy-left">
+            <div class="cy-yr">2021</div>
+            <div class="cy-tag">🏆 RECORD</div>
+          </div>
+          <div class="cy-right">
+            <div class="cy-cols">
+              <div>
+                <div class="cy-col-hd hblue">PIB NOMINAL</div>
+                <div class="cy-col-big" style="color:#185FA5">241,9 mld. lei</div>
+                <div class="cy-col-small">Creștere nominală: +25,6%</div>
+              </div>
+              <div>
+                <div class="cy-col-hd hgreen">CREȘTERE REALĂ</div>
+                <div class="cy-col-big" style="color:#3B6D11">+13,9%</div>
+                <div class="cy-col-small">Record național post-COVID</div>
+              </div>
+            </div>
+            <div class="cy-barchart">
+              <div class="cy-brow">
+                <div class="cy-brow-lbl">Nominal</div>
+                <div class="cy-brow-track"><div class="cy-brow-fill" style="width:100%;background:#185FA5"></div></div>
+                <div class="cy-brow-val" style="color:#185FA5">+25,6%</div>
+              </div>
+              <div class="cy-brow">
+                <div class="cy-brow-lbl">Real</div>
+                <div class="cy-brow-track"><div class="cy-brow-fill" style="width:54%;background:#3B6D11"></div></div>
+                <div class="cy-brow-val" style="color:#3B6D11">+13,9%</div>
+              </div>
+            </div>
+            <div class="cy-evt" style="border-left-color:#3B6D11;background:#f0faf0;">Inflație IPC: <strong>5,1%</strong> · Deflator PIB: <strong>110,3</strong> · Redresare post-COVID + an agricol excelent</div>
+          </div>
+        </div>
+
+        <!-- 2022 -->
+        <div class="cy-item yr-crisis">
+          <div class="cy-left">
+            <div class="cy-yr">2022</div>
+            <div class="cy-tag">⚠️ CRIZĂ</div>
+          </div>
+          <div class="cy-right">
+            <div class="cy-cols">
+              <div>
+                <div class="cy-col-hd hblue">PIB NOMINAL</div>
+                <div class="cy-col-big" style="color:#185FA5">272,6 mld. lei</div>
+                <div class="cy-col-small">Creștere nominală: +12,7%</div>
+              </div>
+              <div>
+                <div class="cy-col-hd hred">CREȘTERE REALĂ</div>
+                <div class="cy-col-big" style="color:#A32D2D">−5,9%</div>
+                <div class="cy-col-small">❌ Nominal ↑ dar real ↓</div>
+              </div>
+            </div>
+            <div class="cy-barchart">
+              <div class="cy-brow">
+                <div class="cy-brow-lbl">Nominal</div>
+                <div class="cy-brow-track"><div class="cy-brow-fill" style="width:50%;background:#185FA5"></div></div>
+                <div class="cy-brow-val" style="color:#185FA5">+12,7%</div>
+              </div>
+              <div class="cy-brow">
+                <div class="cy-brow-lbl">Real</div>
+                <div class="cy-brow-track"><div class="cy-brow-fill" style="width:23%;background:#A32D2D"></div></div>
+                <div class="cy-brow-val" style="color:#A32D2D">−5,9%</div>
+              </div>
+            </div>
+            <div class="cy-evt" style="border-left-color:#CC5500;background:#fff8f0;">Inflație IPC: <strong style="color:#A32D2D">28,6% ⚠</strong> · Deflator: <strong>119,8</strong> · Decalaj: <strong style="color:#A32D2D">18,6 pp — MAXIM</strong> · Război Ucraina + criză energetică</div>
+          </div>
+        </div>
+
+        <!-- 2023 -->
+        <div class="cy-item yr-recovery">
+          <div class="cy-left">
+            <div class="cy-yr">2023</div>
+            <div class="cy-tag">REDRESARE</div>
+          </div>
+          <div class="cy-right">
+            <div class="cy-cols">
+              <div>
+                <div class="cy-col-hd hblue">PIB NOMINAL</div>
+                <div class="cy-col-big" style="color:#185FA5">300,4 mld. lei</div>
+                <div class="cy-col-small">Creștere nominală: +10,2%</div>
+              </div>
+              <div>
+                <div class="cy-col-hd hteal">CREȘTERE REALĂ</div>
+                <div class="cy-col-big" style="color:#0077B6">+1,2%</div>
+                <div class="cy-col-small">Redresare lentă, inflație în scădere</div>
+              </div>
+            </div>
+            <div class="cy-barchart">
+              <div class="cy-brow">
+                <div class="cy-brow-lbl">Nominal</div>
+                <div class="cy-brow-track"><div class="cy-brow-fill" style="width:40%;background:#185FA5"></div></div>
+                <div class="cy-brow-val" style="color:#185FA5">+10,2%</div>
+              </div>
+              <div class="cy-brow">
+                <div class="cy-brow-lbl">Real</div>
+                <div class="cy-brow-track"><div class="cy-brow-fill" style="width:9%;background:#0077B6"></div></div>
+                <div class="cy-brow-val" style="color:#0077B6">+1,2%</div>
+              </div>
+            </div>
+            <div class="cy-evt">Inflație IPC: <strong>13,4%</strong> · Deflator PIB: <strong>109,0</strong> · Decalaj: <strong>9,0 pp</strong></div>
+          </div>
+        </div>
+
+        <!-- 2024 -->
+        <div class="cy-item yr-stagnation">
+          <div class="cy-left">
+            <div class="cy-yr">2024</div>
+            <div class="cy-tag">STAGNARE</div>
+          </div>
+          <div class="cy-right">
+            <div class="cy-cols">
+              <div>
+                <div class="cy-col-hd hblue">PIB NOMINAL</div>
+                <div class="cy-col-big" style="color:#185FA5">323,8 mld. lei</div>
+                <div class="cy-col-small">Creștere nominală: +7,8%</div>
+              </div>
+              <div>
+                <div class="cy-col-hd hamber">CREȘTERE REALĂ</div>
+                <div class="cy-col-big" style="color:#b5911a">+0,1%</div>
+                <div class="cy-col-small">⚠ Aproape zero</div>
+              </div>
+            </div>
+            <div class="cy-barchart">
+              <div class="cy-brow">
+                <div class="cy-brow-lbl">Nominal</div>
+                <div class="cy-brow-track"><div class="cy-brow-fill" style="width:30%;background:#185FA5"></div></div>
+                <div class="cy-brow-val" style="color:#185FA5">+7,8%</div>
+              </div>
+              <div class="cy-brow">
+                <div class="cy-brow-lbl">Real</div>
+                <div class="cy-brow-track"><div class="cy-brow-fill" style="width:2%;background:#b5911a"></div></div>
+                <div class="cy-brow-val" style="color:#b5911a">+0,1%</div>
+              </div>
+            </div>
+            <div class="cy-evt" style="border-left-color:#F5C842;background:#fffdf0;">Inflație IPC: <strong>4,7%</strong> · Deflator PIB: <strong>107,7</strong> · Secetă severă + instabilitate regională</div>
+          </div>
+        </div>
+
+      </div><!-- /canva-years -->
+
+      <!-- ── CONCLUSION ── -->
+      <div class="canva-concl">
+        <div class="canva-concl-icon">💡</div>
+        <div class="canva-concl-text">
+          <h4>Concluzie cheie</h4>
+          <p>PIB nominal a crescut de la <strong style="color:#F5C842">210</strong> la <strong style="color:#F5C842">323 mld. lei (+54%)</strong> în 6 ani, dar creșterea reală cumulată a fost aproape nulă. Cel mai elocvent exemplu: <strong style="color:#F5C842">2022</strong> — nominal <strong style="color:#F5C842">+12,7%</strong>, real <strong style="color:#ff9999">−5,9%</strong>. Inflația, nu producția, a umflat numerele.</p>
+        </div>
+      </div>
+      <div class="canva-sources">Surse: <a href="https://statistica.gov.md/ro/conturi-nationale-9494.html" target="_blank" style="color:rgba(255,255,255,0.35);text-decoration:none;border-bottom:1px dotted rgba(255,255,255,0.2)">statistica.gov.md</a> · <a href="https://data.worldbank.org/indicator/NY.GDP.MKTP.CD?locations=MD" target="_blank" style="color:rgba(255,255,255,0.35);text-decoration:none;border-bottom:1px dotted rgba(255,255,255,0.2)">data.worldbank.org</a> · <a href="https://www.imf.org/en/Countries/MDA" target="_blank" style="color:rgba(255,255,255,0.35);text-decoration:none;border-bottom:1px dotted rgba(255,255,255,0.2)">imf.org</a> · <a href="https://www.macrotrends.net/countries/MDA/moldova/gdp-growth-rate" target="_blank" style="color:rgba(255,255,255,0.35);text-decoration:none;border-bottom:1px dotted rgba(255,255,255,0.2)">macrotrends.net</a> · <a href="https://www.bnm.md/ro/content/raportul-asupra-inflatiei-nr-1-2024" target="_blank" style="color:rgba(255,255,255,0.35);text-decoration:none;border-bottom:1px dotted rgba(255,255,255,0.2)">bnm.md</a></div>
+
+    </div><!-- /canva-infog -->
+  </div>
+</section>
+
+<!-- CAUZE -->
+<section class="cauze-section" id="cauze">
+  <div class="container">
+    <div class="section-label">Analiză cu date statistice</div>
+    <div class="accent-line"></div>
+    <h2 class="section-title">Cauzele decalajului nominal–real<br>în Moldova</h2>
+    <p class="section-desc">De ce diferă atât de mult PIB nominal față de cel real în Republica Moldova? Analiza cauzelor structurale și conjuncturale, cu date statistice reale și exemple concrete.</p>
+    <div class="cauze-grid">
+      <div class="cauza-card c1">
+        <div class="cauza-icon-wrap">⚡</div>
+        <div class="cauza-num">01</div>
+        <h4>Dependența energetică față de Rusia</h4>
+        <p>Moldova importă aproape integral gazul natural și o parte semnificativă a energiei electrice. În 2022, odată cu invazia rusă în Ucraina, prețul gazului pe piețele europene a explodat. Moldova — dependentă de Gazprom — a suportat creșteri masive ale costurilor energetice, generând inflație de tip cost-push: prețurile au crescut nu pentru că economia producea mai mult, ci pentru că inputurile (energia) deveniseră mult mai scumpe. Rezultatul: PIB nominal creștea, PIB real scădea cu −5,9%, iar puterea de cumpărare a populației se prăbușea.</p>
+        <span class="cauza-stat">📊 Inflație 2022: 28,6% IPC · Deflator PIB: ~31,8%</span>
+        <div class="src-block">Surse: <a href="https://www.bnm.md/ro/content/raportul-asupra-inflatiei-nr-1-2024" target="_blank">BNM — Raport inflație</a> · <a href="https://www.worldbank.org/ro/country/moldova/brief/moldova-economic-update" target="_blank">Banca Mondială — Moldova Economic Update</a></div>
+      </div>
+      <div class="cauza-card c2">
+        <div class="cauza-icon-wrap">🌾</div>
+        <div class="cauza-num">02</div>
+        <h4>Volatilitatea producției agricole</h4>
+        <p>Agricultura reprezintă cca. 7–9% din PIB-ul Moldovei și este extrem de vulnerabilă la secetă. Secetele severe din 2020 și 2024 au dus la scăderi dramatice ale producției agricole reale, deși prețurile alimentare mai ridicate au menținut sau crescut valoarea nominală a recoltelor. Astfel, în ani de secetă, PIB nominal poate rămâne stabil sau crește, în timp ce PIB real scade, deoarece volumul fizic al producției s-a redus. Agricultura este astfel un amplificator al decalajului nominal–real: seceta din 2020 a contribuit la scăderea PIB real cu −8,3%, iar cea din 2024 a limitat creșterea reală la doar +0,1%.</p>
+        <span class="cauza-stat">📊 Contribuție agricultură: ~8% din PIB · Secete: 2020, 2022, 2024</span>
+        <div class="src-block">Surse: <a href="https://data.worldbank.org/indicator/NV.AGR.TOTL.ZS?locations=MD" target="_blank">World Bank — Agriculture value added % of GDP</a> · <a href="https://statistica.gov.md/ro/conturi-nationale-9494.html" target="_blank">BNS — Conturi Naționale</a></div>
+      </div>
+      <div class="cauza-card c3">
+        <div class="cauza-icon-wrap">🚢</div>
+        <div class="cauza-num">03</div>
+        <h4>Inflația importată și structura comerțului exterior</h4>
+        <p>Moldova importă o mare parte din bunurile de consum — alimente prelucrate, produse industriale, combustibili. Când prețurile mondiale cresc (post-COVID și post-2022), Moldova importă această inflație. Deprecierea leului moldovenesc în perioadele de instabilitate amplifică fenomenul: importurile devin mai scumpe în lei, alimentând inflația internă și decalajul nominal–real. Deficitul comercial cronic (importuri mai mari decât exporturile cu ~3–5 mld. USD anual) face economia vulnerabilă la orice șoc extern de prețuri.</p>
+        <span class="cauza-stat">📊 Deficit comercial 2022: ~4,1 mld. USD · Importuri: ~60% din PIB</span>
+        <div class="src-block">Surse: <a href="https://www.macrotrends.net/global-metrics/countries/mda/moldova/trade-balance-deficit" target="_blank">Macrotrends — Moldova trade balance</a> · <a href="https://www.imf.org/external/datamapper/profile/MDA" target="_blank">IMF DataMapper Moldova</a></div>
+      </div>
+      <div class="cauza-card c4">
+        <div class="cauza-icon-wrap">🏦</div>
+        <div class="cauza-num">04</div>
+        <h4>Capacitatea limitată a BNM de a controla inflația</h4>
+        <p>Banca Națională a Moldovei a majorat rata de bază de la 8,5% (ianuarie 2022) la 21,5% (august 2022) — o creștere istorică — pentru a combate inflația. Însă politica monetară are efect limitat asupra inflației de tip „cost-push" (generată de prețuri externe), spre deosebire de inflația „demand-pull". Majorarea ratei dobânzii a înăbușit investițiile și consumul, contribuind la scăderea PIB real, fără a putea stopa rapid inflația cauzată de energia scumpă. Aceasta explică paradoxul 2022: rate înalte ale dobânzii + inflație ridicată + PIB real negativ simultan.</p>
+        <span class="cauza-stat">📊 Rata BNM: 8,5% ian.2022 → 21,5% aug.2022 → 3,6% dec.2024</span>
+        <div class="src-block">Surse: <a href="https://www.bnm.md/ro/content/decizii-de-politica-monetara" target="_blank">BNM — Decizii de politică monetară</a> · <a href="https://tradingeconomics.com/moldova/interest-rate" target="_blank">Trading Economics — Moldova interest rate</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTII -->
+<section class="solutii-section" id="solutii">
+  <div class="container">
+    <div class="section-label">Recomandări de politică economică</div>
+    <div class="accent-line"></div>
+    <h2 class="section-title">Soluții pentru reducerea decalajului<br>nominal–real în Moldova</h2>
+    <p class="section-desc">Măsuri concrete, cu referire la exemple reale din Moldova și experiența altor state mici și deschise, pentru a apropia creșterea nominală de cea reală.</p>
+    <div class="sol-grid">
+      <div class="sol-card">
+        <div class="sol-icon">⚡</div>
+        <h4>Diversificarea surselor energetice</h4>
+        <p>Reducerea dependenței de un singur furnizor de energie prin investiții în energie regenerabilă (solar, eolian), interconectare la rețeaua europeană și contracte pe termen lung cu furnizori diversificați. Aceasta ar reduce volatilitatea prețurilor energiei, unul dintre principalii factori ai inflației importate în Moldova. O structură energetică diversificată protejează economia de șocuri externe de tipul celui din 2022, când dependența de Gazprom a costat economia moldovenească o contracție reală de aproape 6%.</p>
+        <div class="sol-example">✅ <strong>Exemplu real Moldova:</strong> În 2022–2023, Moldova s-a conectat la sistemul european ENTSO-E, reducând dependența față de Transnistria și Rusia. Capacitățile solare instalate au crescut de la ~30 MW (2020) la peste 100 MW (2024) — un pas concret spre diversificare.</div>
+        <div class="src-block">Surse: <a href="https://www.entsoe.eu/news/2023/11/22/entso-e-welcomes-moldelectrica-as-an-observer-member/" target="_blank">ENTSO-E — Moldelectrica observer member 2023</a> · <a href="https://www.pv-magazine.com/2025/01/03/moldovas-solar-capacity-hits-344-mw-by-september-2024/" target="_blank">PV Magazine — Solar capacity Moldova 2024</a></div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-icon">🌾</div>
+        <h4>Modernizarea agriculturii și irigațiilor</h4>
+        <p>Investiții în sisteme de irigații, soiuri rezistente la secetă și asigurări agricole pentru a reduce volatilitatea producției. O agricultură mai rezistentă la șocuri climatice ar stabiliza PIB real în anii de secetă, reducând decalajul față de PIB nominal. Având în vedere că secetele din 2020, 2022 și 2024 au contribuit la comprimarea creșterii reale, reziliența agricolă este esențială pentru stabilizarea macroeconomică a Moldovei pe termen mediu.</p>
+        <div class="sol-example">✅ <strong>Exemplu real:</strong> Proiectele FIDA și USAID de irigații în sudul Moldovei au permis unor comunități să mențină producția agricolă în 2024 chiar în condiții de secetă severă, demonstrând că infrastructura de irigații reduce volatilitatea PIB real agricol.</div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-icon">📊</div>
+        <h4>Educație economică și transparență statistică</h4>
+        <p>Publicarea sistematică și accesibilă a PIB real (nu doar nominal) de către BNS și comunicarea publică clară a diferenței dintre cei doi indicatori. Cetățenii și decidenții politici care înțeleg distincția nominal–real vor lua decizii mai informate, evitând iluzia prosperității nominale. Politicile salariale și pensiile indexate la PIB nominal (în loc de cel real) pot duce la decizii de redistribuire care ignoră contracția economică reală — cum s-a întâmplat în 2022.</p>
+        <div class="sol-example">✅ <strong>Bună practică:</strong> Banca Mondială și FMI prezintă întotdeauna ambii indicatori în rapoartele de țară pentru Moldova. Guvernul ar trebui să adopte același standard în comunicarea bugetară și în discursul public despre performanța economică.</div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-icon">🏭</div>
+        <h4>Creșterea capacității productive și a exporturilor</h4>
+        <p>Reducerea deficitului comercial prin stimularea exporturilor cu valoare adăugată mare (IT, procesare alimentară, industrie ușoară) și substituirea unor importuri prin producție locală. O economie mai puțin dependentă de importuri este mai puțin vulnerabilă la inflația externă, menținând decalajul nominal–real la un nivel redus în perioadele de șocuri globale de prețuri. Asocierea cu Uniunea Europeană (DCFTA) oferă Moldovei oportunitatea extinderii exporturilor și diversificării producției interne.</p>
+        <div class="sol-example">✅ <strong>Exemplu real Moldova:</strong> Sectorul IT a crescut de la ~3% din PIB (2019) la ~6% (2024), generând exporturi cu valoare adăugată ridicată și rezistente la inflație — un model de urmat pentru alte sectoare ale economiei moldovenești, inclusiv procesarea agro-alimentară.</div>
+        <div class="src-block">Surse: <a href="https://www.ebrd.com/content/dam/ebrd_dxp/assets/pdfs/office-of-the-chief-economist/transition-report-archive/transition-report-2023/country-assessments-2023-24/eastern-europe-and-the-caucasus/Transition-Report-2024-25-Moldova.pdf" target="_blank">EBRD Transition Report 2024–25 Moldova</a> · <a href="https://mded.gov.md" target="_blank">mded.gov.md</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUZII -->
+<section class="concl-section" id="concluzii">
+  <div class="container">
+    <div class="section-label">Sinteză finală</div>
+    <div class="accent-line" style="background:var(--accent)"></div>
+    <h2 class="section-title">Concluzii</h2>
+    <div class="concl-grid">
+      <div class="concl-card">
+        <div class="concl-num">01</div>
+        <h4>PIB nominal poate induce în eroare</h4>
+        <p>Creșterea nominală reflectă și inflația, nu doar producția reală. În 2022, Moldova părea că crește cu +12,7%, când de fapt economia reală se contracta cu −5,9%. Deciziile de politică economică bazate exclusiv pe PIB nominal pot fi profund eronate.</p>
+      </div>
+      <div class="concl-card">
+        <div class="concl-num">02</div>
+        <h4>PIB real = bunăstare autentică</h4>
+        <p>Doar PIB real, calculat prin deflatorul PIB, arată dacă nivelul de trai al cetățenilor a crescut efectiv. În 2019–2024, creșterea reală cumulată a Moldovei a fost modestă, în contrast cu creșterea nominală de la 210 la 323 mld. lei (+54%).</p>
+      </div>
+      <div class="concl-card">
+        <div class="concl-num">03</div>
+        <h4>Moldova — vulnerabilă, dar cu soluții</h4>
+        <p>Dependența energetică, secetele și importurile masive fac Moldova vulnerabilă la inflație externă. Diversificarea energetică, modernizarea agriculturii și creșterea exporturilor cu valoare adăugată sunt soluțiile structurale pentru a reduce decalajul nominal–real.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <strong>Diferența dintre PIB Nominal și PIB Real — Republica Moldova (2019–2024)</strong><br>
+  Realizat de Țaga Renata și Arghiri Bianca<br><br>
+  Surse: <a href="https://statistica.gov.md" target="_blank">statistica.gov.md</a> ·
+  <a href="https://data.worldbank.org/indicator/NY.GDP.MKTP.CD?locations=MD" target="_blank">data.worldbank.org</a> ·
+  <a href="https://www.imf.org/en/Countries/MDA" target="_blank">imf.org</a> ·
+  <a href="https://macrotrends.net/countries/MDA/moldova/gdp-growth-rate" target="_blank">macrotrends.net</a> ·
+  <a href="https://mded.gov.md" target="_blank">mded.gov.md</a> ·
+  <a href="https://moldstreet.com" target="_blank">MoldStreet.com</a> ·
+  <a href="https://infotag.md" target="_blank">Infotag.md</a>
+</footer>
+
+<script>
+const years=['2019','2020','2021','2022','2023','2024'];
+new Chart(document.getElementById('chart1'),{type:'bar',data:{labels:years,datasets:[{label:'PIB nominal (mld. lei)',data:[210.1,192.6,241.9,272.6,300.4,323.8],backgroundColor:'rgba(24,95,165,0.72)',borderColor:'#185FA5',borderWidth:1,yAxisID:'y',order:3},{label:'Creștere reală (%)',data:[3.6,-8.3,13.9,-5.9,1.2,0.1],type:'line',borderColor:'#3B6D11',backgroundColor:'rgba(59,109,17,0.08)',borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#3B6D11',tension:0.3,yAxisID:'y2',order:1},{label:'Inflație IPC (%)',data:[4.8,3.8,5.1,28.6,13.4,5.1],type:'line',borderColor:'#A32D2D',backgroundColor:'rgba(163,45,45,0.06)',borderWidth:2,borderDash:[5,3],pointRadius:5,pointBackgroundColor:'#A32D2D',tension:0.3,yAxisID:'y2',order:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{if(ctx.datasetIndex===0)return' PIB nominal: '+ctx.parsed.y.toFixed(1)+' mld. lei';if(ctx.datasetIndex===1)return' Creștere reală: '+ctx.parsed.y.toFixed(1)+'%';return' Inflație IPC: '+ctx.parsed.y.toFixed(1)+'%';}}}},scales:{x:{ticks:{font:{size:12}},grid:{display:false}},y:{type:'linear',position:'left',title:{display:true,text:'PIB nominal (mld. lei)',font:{size:11}},min:0,max:400,ticks:{font:{size:11},callback:v=>v+' mld'}},y2:{type:'linear',position:'right',title:{display:true,text:'Rată (%)',font:{size:11}},min:-15,max:35,grid:{drawOnChartArea:false},ticks:{font:{size:11},callback:v=>v+'%'}}}}});
+const rg=[3.6,-8.3,13.9,-5.9,1.2,0.1];
+new Chart(document.getElementById('chart2'),{type:'bar',data:{labels:years,datasets:[{label:'Creștere nominală (%)',data:[11.7,-8.3,25.6,12.7,10.2,7.8],backgroundColor:'rgba(24,95,165,0.72)',borderColor:'#185FA5',borderWidth:1},{label:'Creștere reală (%)',data:rg,backgroundColor:rg.map(v=>v<0?'rgba(163,45,45,0.8)':'rgba(59,109,17,0.72)'),borderColor:rg.map(v=>v<0?'#A32D2D':'#3B6D11'),borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+ctx.parsed.y.toFixed(1)+'%'}}},scales:{x:{ticks:{font:{size:12}},grid:{display:false}},y:{title:{display:true,text:'Rata de creștere (%)',font:{size:11}},ticks:{font:{size:11},callback:v=>v+'%'},grid:{color:'rgba(128,128,128,0.12)'}}}}});
+</script>
+</body>
+</html>
